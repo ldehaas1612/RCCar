@@ -109,7 +109,6 @@ void constructMessage::makeMessage(){
         fullMessage = fullMessage << 10;
         fullMessage = fullMessage | XOR;
 
-
         //use MSB / big endian to put the fullMessage into 4 uint8_t places of transmitData
         transmitData[0] = fullMessage >> 24;
         transmitData[1] = fullMessage >> 16;
