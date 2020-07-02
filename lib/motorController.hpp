@@ -19,7 +19,7 @@
 //
 // ==========================================================================
 /**
- *  \brief motorController class. This abstract class that allows for more types of motor controllers to be implemented later on
+ *  \class motorController class. This abstract class that allows for more types of motor controllers to be implemented later on
  */
 class motorController {
 protected:
@@ -37,7 +37,7 @@ public:
      * @param forwards maximum speed to run motor forwards at
      * @param backwards maximum speed to run motor backwards at
      */
-    motorController( PCA9685_i2c & pca, uint16_t forwards = 4096, uint16_t backwards = 0):
+    motorController( PCA9685_i2c & pca, uint16_t forwards = 4095, uint16_t backwards = 0):
             PCA( pca ),
             FORWARDS( forwards ),
             BACKWARDS( backwards ),
@@ -76,7 +76,7 @@ private:
 
 public:
     /**
-     * \brief motorController child class constructor
+     * \class motorController child class constructor
      *
      * @param pca reference to the PCA object to interact with
      * @param PWMPIN pin on PCA used to send pwm to motor driver
@@ -99,7 +99,7 @@ public:
 };
 
 /**
- *  \brief IBT_2 class. This child class was written to implement my RCcar setup
+ *  \class IBT_2 class. This child class was written to implement my RCcar setup
  *  it requires two enable pin and one PWM pin
  */
 class IBT_2 : public motorController {

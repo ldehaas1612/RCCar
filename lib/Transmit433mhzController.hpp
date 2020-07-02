@@ -111,6 +111,7 @@ public:
 	 * @param oldMax old maximum value of value variable
 	 * @param newMin new minimum value of value variable
      * @param newMax new maximum value of value variable
+     * @return the input value, but scaled to the new range
 	 */
     static uint16_t adapter(const uint16_t & value, const uint16_t & oldMin, const uint16_t & oldMax, const uint16_t & newMin, const uint16_t & newMax);
 
@@ -120,6 +121,7 @@ public:
 	 *
 	 * @param left first value to be XOR'ed with
 	 * @param right second value to be XOR'ed with
+     * @return an XOR of the left and right variables
 	 */
     static uint16_t makeChecksum(const uint16_t & left, const uint16_t & right);
 

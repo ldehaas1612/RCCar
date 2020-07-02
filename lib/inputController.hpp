@@ -11,7 +11,7 @@
 #define IPASS_INPUT_H
 
 /**
- *  inputController class. This abstract class allows for more types of controllers to be implemented later on
+ *  \class inputController class. This abstract class allows for more types of controllers to be implemented later on
  */
 class inputController {
 

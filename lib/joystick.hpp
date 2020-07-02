@@ -14,7 +14,7 @@
 #include "inputController.hpp"
 
 /**
- *  joystickController.
+ *  \class joystickController.
  *  this class implements abstract class inputController so that readX and ReadY are always implemented.
  */
 class joystickController: public inputController {
@@ -49,11 +49,13 @@ public:
 
     /**
      * \brief returns value of current X axis
+     * @return the current value of X
      */
     uint16_t readX() override;
 
     /**
      * \brief return value of current Y axis
+     * @return the current value of Y
      */
     uint16_t readY() override;
 };
