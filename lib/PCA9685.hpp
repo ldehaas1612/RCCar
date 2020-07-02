@@ -159,11 +159,11 @@ public:
      * the constructor also creates the registers and bits structs with it's default values
      * the oscillator frequency is set to a default value because it cannot stay empty
      */
-    PCA9685_i2c( hwlib::i2c_bus & bus, uint_fast8_t address, const pca9685Registers & registers, const pca9685Bits & bits):
+    constexpr PCA9685_i2c( hwlib::i2c_bus & bus, uint_fast8_t address = 0x40):
             bus( bus ),
             address( address ),
-            registers( registers ),
-            bits( bits ),
+            registers( pca9685Registers() ),
+            bits( pca9685Bits() ),
             oscillator_freq( 25000000 )
     {
         // wait for the controller to be ready for the initialization

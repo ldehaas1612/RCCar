@@ -12,6 +12,7 @@ int main() {
 
     auto receiverPin = target::pin_in(target::pins::d2);
     auto receiver = Receiver433mhz(receiverPin);
+    auto message = messageReceiver(receiver);
 
     auto scl = target::pin_oc(target::pins::scl);
     auto sda = target::pin_oc(target::pins::sda);
@@ -23,20 +24,21 @@ int main() {
     PCA.setOscillatorFrequency(27000000);
     PCA.setPWMFreq(50);
     hwlib::wait_ms(10);
+
     //Servo min and max values;
     uint16_t USMIN = 500;
     uint16_t USMAX = 2500;
     int16_t rangeMin = -512;
     int16_t rangeMax = 511;
 
-    const uint16_t FORWARDDIRPIN    = 3;
-    const uint16_t BACKWARDDIRPIN    = 2;
-    //const uint16_t dirPin    = 2;
-    const uint16_t PWMPIN    = 1;
-    const uint16_t SERVOPIN  = 0;
+    const uint8_t FORWARDDIRPIN    = 3;
+    const uint8_t BACKWARDDIRPIN    = 2;
+    //const uint8_t DIRPIN    = 2;
+    const uint8_t PWMPIN    = 1;
+    const uint8_t SERVOPIN  = 0;
 
     // Motordriver controller
-    //genericDriver motor( PCA, pwmPin, dirPin);
+    //genericDriver motor( PCA, PWMPIN, DIRPIN);
     IBT_2 motor( PCA, PWMPIN, FORWARDDIRPIN, BACKWARDDIRPIN);
 
     // Servodriver controller
@@ -46,14 +48,14 @@ int main() {
     volatile bool _true = true;
     while (_true) {
 
-        receiver.messageLoop();
+        message.checkLoop();
 
-        if (receiver.messageAvailable()){
+        if (message.msgAvailable()){
 
-            motor.setDirection(receiver.getMotorDir());
-            motor.setSpeed(receiver.getY()*4);
+            motor.setDirection(message.getMotorDir());
+            motor.setSpeed(message.getY()*4);
 
-            ser.setPosition(ser.mapInverse(receiver.getX() * (receiver.getServoDir() == 0 ? -1 : 1)));
+            ser.setPosition(ser.mapInverse(message.getX() * (message.getServoDir() == 0 ? -1 : 1)));
         }
     }
 }
