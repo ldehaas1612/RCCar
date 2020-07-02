@@ -9,7 +9,10 @@
 
 #include <hwlib.hpp>
 
-
+/**
+ * \class this class handles all the transmitting
+ * it implements the custom protocol
+ */
 class Transmit433mhzController{
 	hwlib::pin_out & Transmitter;
 
@@ -57,6 +60,10 @@ public:
     void keepAlive();
 };
 
+/**
+ * \class this class constructs a specific setup of 433mhz messages to control a RC car with
+ * it builds a custom message which it sends out using the transmitController
+ */
 class constructMessage {
 private:
     Transmit433mhzController transmitter;                   /**< transmit433mhz class for intern use */

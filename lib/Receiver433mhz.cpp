@@ -23,45 +23,8 @@ void Receiver433mhz::setReceiverHighFlag(bool b) {
     ReceiverHighFlag = b;
 }
 
-bool Receiver433mhz::getMotorDir(){
-    return motorDir;
-}
-
-bool Receiver433mhz::getServoDir(){
-    return servoDir;
-}
-
-uint16_t Receiver433mhz::getY(){
-    return Yval;
-}
-
-uint16_t Receiver433mhz::getX(){
-    return Xval;
-}
-
-bool Receiver433mhz::messageAvailable(){
+bool Receiver433mhz::msgAvailable(){
     return validMessage;
-}
-
-bool Receiver433mhz::decodeMessage(uint8_t arr[]){
-    uint32_t fullMessage = arr[3] | (arr[2] << 8) | (arr[1] << 16) | (arr[0] << 24);
-    //hwlib::cout << "decimal fullmessage: " << fullMessage << hwlib::endl;
-    Checksum = fullMessage & 0b1111111111;
-    fullMessage = fullMessage >> 10;
-    servoDir = fullMessage & 0x01;
-    fullMessage = fullMessage >> 1;
-    Xval = fullMessage & 0b111111111;
-    fullMessage = fullMessage >> 9;
-    Yval = fullMessage & 0b1111111111;
-    fullMessage = fullMessage >> 10;
-    motorDir = fullMessage & 0x01;
-    fullMessage = fullMessage >> 1;
-    //hwlib::cout << "motorDir: " << motorDir << " servoDir: " << servoDir << " Y: " << Yval << " X: " << Xval << " checksum: " << Checksum << hwlib::endl;
-    return checksum(Yval, ((Xval << 1) | (int) servoDir), Checksum);
-}
-
-bool Receiver433mhz::checksum(const uint16_t & left, const uint16_t & right, const uint16_t & XOR){
-    return (left ^ right) == XOR;
 }
 
 void Receiver433mhz::messageLoop(){
@@ -117,7 +80,11 @@ void Receiver433mhz::messageLoop(){
             // new bit took longer then 2ms and still no new pulse. When count is 8 the message is just a keepalive
             // only true when waiting longer then 2 ms |  true when Flag is false |  if the counter is more then 8
             if ((hwlib::now_us() - bitTimer > 2000) && !ReceiverLowFlag && count > 8) {
-                validMessage = decodeMessage(array);
+                for(size_t j = 0 ;j < count/8;j++)
+                {
+                    finishedArray[j]=array[j];
+                }
+                validMessage = true;
                 for(size_t i = 0; i < count/8; i++) {
                     array[i] = 0x00;
                 }
@@ -127,5 +94,52 @@ void Receiver433mhz::messageLoop(){
                 state = state_t::TIMING;
             }
             break;
+    }
+}
+
+
+bool messageReceiver::getMotorDir(){
+    return motorDir;
+}
+
+bool messageReceiver::getServoDir(){
+    return servoDir;
+}
+
+uint16_t messageReceiver::getY(){
+    return Yval;
+}
+
+uint16_t messageReceiver::getX(){
+    return Xval;
+}
+
+bool messageReceiver::msgAvailable(){
+    return validMessage;
+}
+
+bool messageReceiver::decodeMessage(uint8_t arr[]){
+    uint32_t fullMessage = arr[3] | (arr[2] << 8) | (arr[1] << 16) | (arr[0] << 24);
+    Checksum = fullMessage & 0b1111111111;
+    fullMessage = fullMessage >> 10;
+    servoDir = fullMessage & 0x01;
+    fullMessage = fullMessage >> 1;
+    Xval = fullMessage & 0b111111111;
+    fullMessage = fullMessage >> 9;
+    Yval = fullMessage & 0b1111111111;
+    fullMessage = fullMessage >> 10;
+    motorDir = fullMessage & 0x01;
+    fullMessage = fullMessage >> 1;
+    return checksum(Yval, ((Xval << 1) | (int) servoDir), Checksum);
+}
+
+bool messageReceiver::checksum(const uint16_t & left, const uint16_t & right, const uint16_t & XOR){
+    return (left ^ right) == XOR;
+}
+
+void messageReceiver::checkLoop(){
+    receiver.messageLoop();
+    if (receiver.msgAvailable()){
+        validMessage = decodeMessage(receiver.finishedArray);
     }
 }
